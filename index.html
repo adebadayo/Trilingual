@@ -22,46 +22,101 @@ class TrilingualApp extends React.Component {
       <div>
       <h3 className="uk-h3">Trilingual</h3>
 
-      <form className="uk-form">
-        <input type="text" placeholder="Japanese" />
-        <input type="text" placeholder="English" />
-        <input type="text" placeholder="Mongolia" />
-        <input className="uk-button uk-button-success" type="button" value="register" />
-      </form>
-
       <Grid />
       </div>
     );
   }
+
 }
 
 class Grid extends React.Component {
+  constructor(props) {
+   super(props);
+   this.handleChange = this.handleChange.bind(this);
+   this.handleSubmit = this.handleSubmit.bind(this);
+   this.state = {
+     items: [],
+     japanese: [],
+     english : [],
+     mongolia : []};
+ }
+
   render() {
     return (
-      <table className="uk-table">
-        <thead>
-            <tr>
-              <th>Japanese</th>
-              <th>English</th>
-              <th>Mongolia</th>
-            </tr>
-        </thead>
-        <tbody>
-          <GridList />
-        </tbody>
-      </table>
+      <div>
+        <form className="uk-form"
+          onSubmit = {this.handleSubmit}>
+          <input onChange={this.handleChange} name="japanese" type="text" placeholder="Japanese" value={this.state.japanese}/>
+          <input onChange={this.handleChange} name="english" type="text" placeholder="English" value={this.state.english}/>
+          <input onChange={this.handleChange} name="mongolia" type="text" placeholder="Mongolia" value={this.state.mongolia}/>
+          <button className="uk-button uk-button-success">register</button>
+        </form>
+
+        <table className="uk-table">
+          <thead>
+              <tr>
+                <th>Japanese</th>
+                <th>English</th>
+                <th>Mongolia</th>
+              </tr>
+          </thead>
+          <GridList items={this.state.items} />
+        </table>
+      </div>
     );
+  }
+
+  handleChange(e) {
+    switch (e.target.name) {
+      case "japanese":
+        this.setState({japanese: e.target.value});
+        break;
+      case "english":
+      this.setState({english: e.target.value});
+        break;
+      case "mongolia":
+        this.setState({mongolia: e.target.value});
+        break;
+      default:
+    }
+  }
+
+  handleSubmit(e) {
+    console.log(this.state)
+    e.preventDefault();
+    var newItem = {
+      japanese: this.state.japanese,
+      english: this.state.english,
+      mongolia: this.state.mongolia,
+      id: Date.now()
+    };
+    this.setState((prevState) => ({
+      items: prevState.items.concat(newItem),
+      japanese: [],
+      english: [],
+      mongolia: [],
+    }));
+    console.log(this.state)
   }
 }
 
 class GridList extends React.Component {
   render() {
     return (
-      <tr>
-        <td>こんにちは</td>
-        <td>Hello</td>
-        <td>Сайн байна уу</td>
-      </tr>
+      <tbody>
+        <tr>
+          <td>こんにちは</td>
+          <td>Hello</td>
+          <td>Сайн байна уу</td>
+        </tr>
+        {this.props.items.map(item => (
+          <tr key={item.id}>
+            <td>{item.japanese}</td>
+            <td>{item.english}</td>
+            <td>{item.mongolia}</td>
+          </tr>
+        ))}
+      </tbody>
     );
   }
 }
