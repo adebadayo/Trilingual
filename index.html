@@ -12,43 +12,10 @@
   <script src="js/uikit.min.js"></script>
 </head>
 <body>
-  <div id="root">
-  <h3 class="uk-h3">Trilingual</h3>
-
-  <form class="uk-form">
-    <input type="text" placeholder="Japanese">
-    <input type="text" placeholder="English">
-    <input type="text" placeholder="Mongolia">
-    <input class="uk-button uk-button-success" type="button" value="register">
-  </form>
-
-  <table class="uk-table">
-    <thead>
-        <tr>
-          <th>Japanese</th>
-          <th>English</th>
-          <th>Mongolia</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-          <td>こんにちは</td>
-          <td>Hello</td>
-          <td>Сайн байна уу</td>
-        </tr>
-    </tbody>
-  </table>
-</div>
+  <div id="root"></div>
 
 <script type="text/babel">
-
-class TodoApp extends React.Component {
-  constructor(props) {
-    super(props);
-    this.handleChange = this.handleChange.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
-    this.state = {items: [], text: ''};
-  }
+class TrilingualApp extends React.Component {
 
   render() {
     return (
@@ -62,6 +29,15 @@ class TodoApp extends React.Component {
         <input className="uk-button uk-button-success" type="button" value="register" />
       </form>
 
+      <Grid />
+      </div>
+    );
+  }
+}
+
+class Grid extends React.Component {
+  render() {
+    return (
       <table className="uk-table">
         <thead>
             <tr>
@@ -71,47 +47,26 @@ class TodoApp extends React.Component {
             </tr>
         </thead>
         <tbody>
-            <tr>
-              <td>こんにちは</td>
-              <td>Hello</td>
-              <td>Сайн байна уу</td>
-            </tr>
+          <GridList />
         </tbody>
       </table>
-      </div>
     );
-  }
-
-  handleChange(e) {
-    this.setState({text: e.target.value});
-  }
-
-  handleSubmit(e) {
-    e.preventDefault();
-    var newItem = {
-      text: this.state.text,
-      id: Date.now()
-    };
-    this.setState((prevState) => ({
-      items: prevState.items.concat(newItem),
-      text: ''
-    }));
   }
 }
 
-class TodoList extends React.Component {
+class GridList extends React.Component {
   render() {
     return (
-      <ul>
-        {this.props.items.map(item => (
-          <li key={item.id}>{item.text}</li>
-        ))}
-      </ul>
+      <tr>
+        <td>こんにちは</td>
+        <td>Hello</td>
+        <td>Сайн байна уу</td>
+      </tr>
     );
   }
 }
 
-ReactDOM.render(<TodoApp />, document.getElementById('root'));
+ReactDOM.render(<TrilingualApp />, document.getElementById('root'));
 
 </script>
 
