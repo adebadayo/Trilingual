@@ -35,10 +35,15 @@ class Grid extends React.Component {
    this.handleChange = this.handleChange.bind(this);
    this.handleSubmit = this.handleSubmit.bind(this);
    this.state = {
-     items: [],
+     items : [],
      japanese: [],
      english : [],
-     mongolia : []};
+     mongolia : []
+   };
+   let datalist = localStorage.getItem("datalist");
+   if(datalist){
+     this.state = {items : JSON.parse(datalist)};
+   }
  }
 
   render() {
@@ -82,21 +87,28 @@ class Grid extends React.Component {
   }
 
   handleSubmit(e) {
-    console.log(this.state)
     e.preventDefault();
-    var newItem = {
+    let newItem = {
       japanese: this.state.japanese,
       english: this.state.english,
       mongolia: this.state.mongolia,
       id: Date.now()
     };
+    this.saveToLocalStorage(newItem)
+
     this.setState((prevState) => ({
       items: prevState.items.concat(newItem),
       japanese: [],
       english: [],
       mongolia: [],
     }));
-    console.log(this.state)
+
+  }
+
+  saveToLocalStorage(newItem){
+    let datalist = this.state.items
+    datalist.push(newItem)
+    localStorage.setItem("datalist", JSON.stringify(datalist));
   }
 }
 
@@ -104,11 +116,6 @@ class GridList extends React.Component {
   render() {
     return (
       <tbody>
-        <tr>
-          <td>こんにちは</td>
-          <td>Hello</td>
-          <td>Сайн байна уу</td>
-        </tr>
         {this.props.items.map(item => (
           <tr key={item.id}>
             <td>{item.japanese}</td>
