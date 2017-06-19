@@ -2,6 +2,7 @@
 <html>
 <head>
   <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Trilingual</title>
   <script src="https://unpkg.com/react@latest/dist/react.js"></script>
   <script src="https://unpkg.com/react-dom@latest/dist/react-dom.js"></script>
@@ -10,6 +11,8 @@
   <link rel="stylesheet" href="css/uikit.min.css" />
   <script src="http://code.jquery.com/jquery.js"></script>
   <script src="js/uikit.min.js"></script>
+
+  <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
   <div id="root"></div>
@@ -19,10 +22,13 @@ class TrilingualApp extends React.Component {
 
   render() {
     return (
-      <div>
-      <h3 className="uk-h3">Trilingual</h3>
-
-      <Grid />
+      <div className="uk-grid">
+        <div className="uk-width-1-10"></div>
+          <div className="uk-width-8-10">
+            <h3 className="uk-h3">Trilingual</h3>
+            <Grid />
+          </div>
+        <div className="uk-width-1-10"></div>
       </div>
     );
   }
@@ -34,6 +40,7 @@ class Grid extends React.Component {
    super(props);
    this.handleChange = this.handleChange.bind(this);
    this.handleSubmit = this.handleSubmit.bind(this);
+   this.handleClick = this.handleClick.bind(this);
    this.state = {
      items : [],
      japanese: [],
@@ -49,11 +56,11 @@ class Grid extends React.Component {
   render() {
     return (
       <div>
-        <form className="uk-form"
+        <form className="uk-form uk-grid"
           onSubmit = {this.handleSubmit}>
-          <input onChange={this.handleChange} name="japanese" type="text" placeholder="Japanese" value={this.state.japanese}/>
-          <input onChange={this.handleChange} name="english" type="text" placeholder="English" value={this.state.english}/>
-          <input onChange={this.handleChange} name="mongolia" type="text" placeholder="Mongolia" value={this.state.mongolia}/>
+          <input className="uk-width-small-1-3" onChange={this.handleChange} name="japanese" type="text" placeholder="Japanese" value={this.state.japanese}/>
+          <input className="uk-width-small-1-3" onChange={this.handleChange} name="english" type="text" placeholder="English" value={this.state.english}/>
+          <input className="uk-width-small-1-3" onChange={this.handleChange} name="mongolia" type="text" placeholder="Mongolia" value={this.state.mongolia}/>
           <button className="uk-button uk-button-success">register</button>
         </form>
 
@@ -63,9 +70,12 @@ class Grid extends React.Component {
                 <th>Japanese</th>
                 <th>English</th>
                 <th>Mongolia</th>
+                <th></th>
               </tr>
           </thead>
-          <GridList items={this.state.items} />
+          <GridList
+          func={this.handleClick}
+          items={this.state.items} />
         </table>
       </div>
     );
@@ -96,19 +106,34 @@ class Grid extends React.Component {
     };
     this.saveToLocalStorage(newItem)
 
-    this.setState((prevState) => ({
-      items: prevState.items.concat(newItem),
-      japanese: [],
-      english: [],
-      mongolia: [],
-    }));
+  }
 
+  handleClick(e){
+    let index = e.target.name
+    console.log(index)
+    this.deleteList(index)
+    this.setState((prevState) => ({
+      items: prevState.items.splice(index),
+    }));
   }
 
   saveToLocalStorage(newItem){
     let datalist = this.state.items
     datalist.push(newItem)
     localStorage.setItem("datalist", JSON.stringify(datalist));
+    this.setState({
+      items: datalist,
+      japanese: [],
+      english: [],
+      mongolia: [],
+    });
+    console.log(datalist);
+
+  }
+  deleteList(index){
+    let datalist = this.state.items
+    datalist.splice(index, 1)
+    localStorage.setItem("datalist", JSON.stringify(this.state.items));
   }
 }
 
@@ -116,16 +141,23 @@ class GridList extends React.Component {
   render() {
     return (
       <tbody>
-        {this.props.items.map(item => (
+        {this.props.items.map((item,index) => (
           <tr key={item.id}>
             <td>{item.japanese}</td>
             <td>{item.english}</td>
             <td>{item.mongolia}</td>
+            <td>
+              <button
+                name = {index}
+                onClick ={this.props.func}
+                className="uk-button uk-button-danger button">delete</button>
+            </td>
           </tr>
         ))}
       </tbody>
     );
   }
+
 }
 
 ReactDOM.render(<TrilingualApp />, document.getElementById('root'));
