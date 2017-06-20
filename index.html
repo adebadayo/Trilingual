@@ -99,6 +99,13 @@ class Grid extends React.Component {
   handleSubmit(e) {
     e.preventDefault();
     let datalist = this.state.items
+
+    if(this.checkValidation() == false){
+      // update state to avoid reloading screen
+      this.setState({items: datalist,});
+      return;
+    }
+
     let newItem = {
       japanese: this.state.japanese,
       english: this.state.english,
@@ -115,7 +122,6 @@ class Grid extends React.Component {
       english: [],
       mongolia: [],
     });
-
   }
 
   handleClick(e){
@@ -124,9 +130,18 @@ class Grid extends React.Component {
     let datalist = this.state.items
 
     datalist.splice(index, 1)
-    
+
     localStorage.setItem("datalist", JSON.stringify(this.state.items));
     this.setState({items: datalist});
+  }
+
+  checkValidation(){
+    if (   (!this.state.japanese || this.state.japanese.length == 0)
+         &&(!this.state.english  || this.state.english.length == 0)
+         &&(!this.state.mongolia || this.state.mongolia.length == 0)){
+      return false;
+    }
+    return true;
   }
 
 }
