@@ -98,28 +98,16 @@ class Grid extends React.Component {
 
   handleSubmit(e) {
     e.preventDefault();
+    let datalist = this.state.items
     let newItem = {
       japanese: this.state.japanese,
       english: this.state.english,
       mongolia: this.state.mongolia,
       id: Date.now()
     };
-    this.saveToLocalStorage(newItem)
 
-  }
-
-  handleClick(e){
-    let index = e.target.name
-    console.log(index)
-    this.deleteList(index)
-    this.setState((prevState) => ({
-      items: prevState.items.splice(index),
-    }));
-  }
-
-  saveToLocalStorage(newItem){
-    let datalist = this.state.items
     datalist.push(newItem)
+
     localStorage.setItem("datalist", JSON.stringify(datalist));
     this.setState({
       items: datalist,
@@ -127,14 +115,20 @@ class Grid extends React.Component {
       english: [],
       mongolia: [],
     });
-    console.log(datalist);
 
   }
-  deleteList(index){
+
+  handleClick(e){
+    e.preventDefault();
+    let index = e.target.name
     let datalist = this.state.items
+
     datalist.splice(index, 1)
+    
     localStorage.setItem("datalist", JSON.stringify(this.state.items));
+    this.setState({items: datalist});
   }
+
 }
 
 class GridList extends React.Component {
